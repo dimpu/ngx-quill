@@ -1,0 +1,146 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "ngx-quill-demo": {
+      "root": "projects/ngx-quill-demo/",
+      "sourceRoot": "projects/ngx-quill-demo/src",
+      "projectType": "application",
+      "prefix": "app",
+      "schematics": {
+        "@schematics/angular:component": {
+          "styleext": "scss"
+        }
+      },
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/ngx-quill-demo",
+            "index": "projects/ngx-quill-demo/src/index.html",
+            "main": "projects/ngx-quill-demo/src/main.ts",
+            "polyfills": "projects/ngx-quill-demo/src/polyfills.ts",
+            "tsConfig": "projects/ngx-quill-demo/tsconfig.app.json",
+            "assets": [
+              "projects/ngx-quill-demo/src/favicon.ico",
+              "projects/ngx-quill-demo/src/assets"
+            ],
+            "styles": [
+              "projects/ngx-quill-demo/src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/ngx-quill-demo/src/environments/environment.ts",
+                  "with": "projects/ngx-quill-demo/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "ngx-quill-demo:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "ngx-quill-demo:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "ngx-quill-demo:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ngx-quill-demo/src/test.ts",
+            "polyfills": "projects/ngx-quill-demo/src/polyfills.ts",
+            "tsConfig": "projects/ngx-quill-demo/tsconfig.spec.json",
+            "karmaConfig": "projects/ngx-quill-demo/karma.conf.js",
+            "styles": [
+              "projects/ngx-quill-demo/src/styles.scss"
+            ],
+            "scripts": [],
+            "assets": [
+              "projects/ngx-quill-demo/src/favicon.ico",
+              "projects/ngx-quill-demo/src/assets"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/ngx-quill-demo/tsconfig.app.json",
+              "projects/ngx-quill-demo/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "ngx-quill": {
+      "root": "projects/ngx-quill",
+      "sourceRoot": "projects/ngx-quill/src",
+      "projectType": "library",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/ngx-quill/tsconfig.lib.json",
+            "project": "projects/ngx-quill/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ngx-quill/src/test.ts",
+            "tsConfig": "projects/ngx-quill/tsconfig.spec.json",
+            "karmaConfig": "projects/ngx-quill/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/ngx-quill/tsconfig.lib.json",
+              "projects/ngx-quill/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "ngx-quill"
+}
