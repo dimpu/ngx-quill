@@ -35,7 +35,7 @@ import { QuillModule } from 'ngx-quill'
 })
 class YourModule { ... }
 ```
-- use `<quill-editor></quill-editor>` in your templates to add a default quill editor
+- use `<ngx-quill></ngx-quill>` in your templates to add a default quill editor
 - do not forget to include quill + theme css in your buildprocess, module or index.html!
 
 ### For SystemJS builds (Config)
@@ -105,10 +105,10 @@ packages: {
 - strict - default: true, sets editor in strict mode
 - scrollingContainer - default '.ql-editor', allows to set scrolling container
 - use custom-options for adding for example custom font sizes --> this overwrites this options **globally** !!!
-- possbility to create a custom toolbar via projection slot `[quill-editor-toolbar]`:
+- possbility to create a custom toolbar via projection slot `[ngx-quill-toolbar]`:
 ```
-<quill-editor>
-  <div quill-editor-toolbar>
+<ngx-quill>
+  <div ngx-quill-toolbar>
     <span class="ql-formats">
       <button class="ql-bold" [title]="'Bold'"></button>
     </span>
@@ -127,7 +127,7 @@ packages: {
       </select>
     </span>
   </div>
-</quill-editor>
+</ngx-quill>
 ```
 
 ## Outputs

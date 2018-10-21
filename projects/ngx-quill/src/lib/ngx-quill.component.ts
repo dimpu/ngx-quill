@@ -1,4 +1,4 @@
-import { isPlatformServer } from '@angular/common';
+import { isPlatformServer, DOCUMENT } from '@angular/common';
 
 import {
   AfterViewInit,
@@ -25,7 +25,6 @@ import {
   Validator
 } from '@angular/forms';
 
-import { DOCUMENT } from '@angular/common';
 
 // import * as QuillNamespace from 'quill';
 // Because quill uses `document` directly, we cannot `import` during SSR
@@ -39,25 +38,25 @@ export interface CustomOption {
 }
 
 @Component({
-  selector: 'quill-editor',
+  selector: 'ngx-quill',
   template: `
-  <ng-content select="[quill-editor-toolbar]"></ng-content>
+  <ng-content select="[ngx-quill-toolbar]"></ng-content>
 `,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => QuillEditorComponent),
+      useExisting: forwardRef(() => NgxQuillComponent),
       multi: true
     },
     {
       provide: NG_VALIDATORS,
-      useExisting: forwardRef(() => QuillEditorComponent),
+      useExisting: forwardRef(() => NgxQuillComponent),
       multi: true
     }
   ],
   encapsulation: ViewEncapsulation.None
 })
-export class QuillEditorComponent
+export class NgxQuillComponent
   implements AfterViewInit, ControlValueAccessor, OnChanges, OnDestroy, Validator {
   quillEditor: any;
   editorElem: HTMLElement;
@@ -170,7 +169,7 @@ export class QuillEditorComponent
     }
 
     const toolbarElem = this.elementRef.nativeElement.querySelector(
-      '[quill-editor-toolbar]'
+      '[ngx-quill-toolbar]'
     );
     const modules: any = this.modules || this.defaultModules;
     let placeholder = 'Insert text here ...';
@@ -184,10 +183,10 @@ export class QuillEditorComponent
     }
     this.elementRef.nativeElement.insertAdjacentHTML(
       'beforeend',
-      '<div quill-editor-element></div>'
+      '<div ngx-quill-element></div>'
     );
     this.editorElem = this.elementRef.nativeElement.querySelector(
-      '[quill-editor-element]'
+      '[ngx-quill-element]'
     );
 
     if (this.style) {

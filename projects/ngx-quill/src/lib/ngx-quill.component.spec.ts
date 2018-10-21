@@ -2,19 +2,19 @@ import { TestBed, async, ComponentFixture } from '@angular/core/testing';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { QuillEditorComponent } from './ngx-quill.component';
+import { NgxQuillComponent } from './ngx-quill.component';
 
 import * as QuillNamespace from 'quill';
 const Quill: any = QuillNamespace;
 
 @Component({
   template: `
-  <quill-editor
+  <ngx-quill
     [(ngModel)]="title"
     [customOptions]="[{import: 'attributors/style/size', whitelist: ['14']}]" [style]="{height: '30px'}"
     [required]="required" [minLength]="minLength" [maxLength]="maxLength" [readOnly]="isReadOnly"
     (onEditorCreated)="handleEditorCreated($event)" (onContentChanged)="handleChange($event);"
-    (onSelectionChanged)="handleSelection($event);"></quill-editor>
+    (onSelectionChanged)="handleSelection($event);"></ngx-quill>
 `
 })
 class TestComponent {
@@ -40,10 +40,10 @@ class TestComponent {
 
 @Component({
   template: `
-<quill-editor [(ngModel)]="title" [required]="true" [minLength]="minLength" [maxLength]="maxLength"
+<ngx-quill [(ngModel)]="title" [required]="true" [minLength]="minLength" [maxLength]="maxLength"
 [readOnly]="isReadOnly" (onEditorCreated)="handleEditorCreated($event)"
 (onContentChanged)="handleChange($event);">
-  <div quill-editor-toolbar="true">
+  <div ngx-quill-toolbar="true">
     <span class="ql-formats">
       <button class="ql-bold" [title]="'Bold'"></button>
     </span>
@@ -62,7 +62,7 @@ class TestComponent {
       </select>
     </span>
   </div>
-</quill-editor>
+</ngx-quill>
 `
 })
 class TestToolbarComponent {
@@ -77,14 +77,14 @@ class TestToolbarComponent {
 }
 
 
-describe('Basic QuillEditorComponent', () => {
+describe('Basic NgxQuillComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [QuillEditorComponent]
+      declarations: [NgxQuillComponent]
     });
 
-    this.fixture = TestBed.createComponent(QuillEditorComponent) as ComponentFixture<QuillEditorComponent>;
+    this.fixture = TestBed.createComponent(NgxQuillComponent) as ComponentFixture<NgxQuillComponent>;
   });
 
   it('should render toolbar', async(() => {
@@ -102,11 +102,11 @@ describe('Basic QuillEditorComponent', () => {
   }));
 });
 
-describe('Advanced QuillEditorComponent', () => {
+describe('Advanced NgxQuillComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [QuillEditorComponent, TestComponent, TestToolbarComponent],
+      declarations: [NgxQuillComponent, TestComponent, TestToolbarComponent],
       imports: [FormsModule]
     }).compileComponents();
 
@@ -132,7 +132,7 @@ describe('Advanced QuillEditorComponent', () => {
     this.fixture.whenStable().then(() => {
       expect(editorCmp.readOnly).toBe(true);
       expect(editorElem.nativeElement.querySelectorAll('div.ql-container.ql-disabled').length).toBe(1);
-      expect(editorElem.nativeElement.querySelector('div[quill-editor-element]').style.height).toBe('30px');
+      expect(editorElem.nativeElement.querySelector('div[ngx-quill-element]').style.height).toBe('30px');
     });
   }));
 
@@ -319,7 +319,7 @@ describe('Advanced QuillEditorComponent', () => {
     this.fixture = TestBed.createComponent(TestToolbarComponent) as ComponentFixture<TestToolbarComponent>;
 
     this.fixture.detectChanges();
-    expect(this.fixture.nativeElement.querySelector('[quill-editor-toolbar]').querySelector('span[title=Alignment]')).toBeDefined();
+    expect(this.fixture.nativeElement.querySelector('[ngx-quill-toolbar]').querySelector('span[title=Alignment]')).toBeDefined();
 
     const editorComponent = this.fixture.debugElement.children[0].componentInstance;
     expect(editorComponent.required).toBe(true);
