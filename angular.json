@@ -106,33 +106,33 @@
         }
       }
     },
-    "ngx-quill": {
-      "root": "projects/ngx-quill",
-      "sourceRoot": "projects/ngx-quill/src",
+    "@dimpu/ngx-quill": {
+      "root": "projects/dimpu/ngx-quill",
+      "sourceRoot": "projects/dimpu/ngx-quill/src",
       "projectType": "library",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
-            "tsConfig": "projects/ngx-quill/tsconfig.lib.json",
-            "project": "projects/ngx-quill/ng-package.json"
+            "tsConfig": "projects/dimpu/ngx-quill/tsconfig.lib.json",
+            "project": "projects/dimpu/ngx-quill/ng-package.json"
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/ngx-quill/src/test.ts",
-            "tsConfig": "projects/ngx-quill/tsconfig.spec.json",
-            "karmaConfig": "projects/ngx-quill/karma.conf.js"
+            "main": "projects/dimpu/ngx-quill/src/test.ts",
+            "tsConfig": "projects/dimpu/ngx-quill/tsconfig.spec.json",
+            "karmaConfig": "projects/dimpu/ngx-quill/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/ngx-quill/tsconfig.lib.json",
-              "projects/ngx-quill/tsconfig.spec.json"
+              "projects/dimpu/ngx-quill/tsconfig.lib.json",
+              "projects/dimpu/ngx-quill/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"
@@ -142,5 +142,5 @@
       }
     }
   },
-  "defaultProject": "ngx-quill"
+  "defaultProject": "@dimpu/ngx-quill"
 }

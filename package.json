@@ -30,9 +30,9 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "lib.build": "ng build ngx-quill",
-    "lib.test": "ng test ngx-quill",
-    "lib.lint": "ng lint ngx-quill",
+    "lib.build": "ng build @dimpu/ngx-quill",
+    "lib.test": "ng test @dimpu/ngx-quill",
+    "lib.lint": "ng lint @dimpu/ngx-quill",
     "demo.serve": "ng serve ngx-quill-demo",
     "demo.build": "ng build ngx-quill-demo",
     "demo.test": "ng test ngx-quill-demo",
