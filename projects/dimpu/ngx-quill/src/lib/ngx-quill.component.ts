@@ -24,6 +24,7 @@ import {
   ControlValueAccessor,
   Validator
 } from '@angular/forms';
+import { htmlAstToRender3Ast } from '@angular/compiler/src/render3/r3_template_transform';
 
 
 // import * as QuillNamespace from 'quill';
@@ -61,7 +62,7 @@ export class NgxQuillComponent
   quillEditor: any;
   editorElem: HTMLElement;
   emptyArray: any[] = [];
-  content: any;
+
   selectionChangeEvent: any;
   textChangeEvent: any;
   defaultModules = {
@@ -105,7 +106,7 @@ export class NgxQuillComponent
   @Input() scrollingContainer: HTMLElement | string;
   @Input() bounds: HTMLElement | string;
   @Input() customOptions: CustomOption[] = [];
-
+  @Input() content: any;
   // tslint:disabel:no-on-prefix-output-name
   @Output() editorCreated: EventEmitter<any> = new EventEmitter();
   @Output() contentChanged: EventEmitter<any> = new EventEmitter();
@@ -212,24 +213,7 @@ export class NgxQuillComponent
       scrollingContainer: this.scrollingContainer
     });
 
-    if (this.content) {
-      if (this.format === 'object') {
-        this.quillEditor.setContents(this.content, 'silent');
-      } else if (this.format === 'text') {
-        this.quillEditor.setText(this.content, 'silent');
-      } else if (this.format === 'json') {
-        try {
-          this.quillEditor.setContents(JSON.parse(this.content), 'silent');
-        } catch (e) {
-          this.quillEditor.setText(this.content, 'silent');
-        }
-      } else {
-        const contents = this.quillEditor.clipboard.convert(this.content);
-        this.quillEditor.setContents(contents, 'silent');
-      }
-
-      this.quillEditor.history.clear();
-    }
+    this.onContentSet();
 
     this.editorCreated.emit(this.quillEditor);
 
@@ -259,7 +243,6 @@ export class NgxQuillComponent
 
         const text = this.quillEditor.getText();
         const content = this.quillEditor.getContents();
-
         let html: string | null = this.editorElem.children[0].innerHTML;
         if (html === '<p><br></p>' || html === '<div><br><div>') {
           html = null;
@@ -293,6 +276,27 @@ export class NgxQuillComponent
     }
   }
 
+  onContentSet() {
+    if (this.content) {
+      if (this.format === 'object') {
+        this.quillEditor.setContents(this.content, 'silent');
+      } else if (this.format === 'text') {
+        this.quillEditor.setText(this.content, 'silent');
+      } else if (this.format === 'json') {
+        try {
+          this.quillEditor.setContents(JSON.parse(this.content), 'silent');
+        } catch (e) {
+          this.quillEditor.setText(this.content, 'silent');
+        }
+      } else {
+        const contents = this.quillEditor.clipboard.convert(this.content);
+        this.quillEditor.setContents(contents, 'silent');
+      }
+
+      this.quillEditor.history.clear();
+    }
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (!this.quillEditor) {
       return;
@@ -303,6 +307,9 @@ export class NgxQuillComponent
     if (changes['placeholder']) {
       this.quillEditor.root.dataset.placeholder =
         changes['placeholder'].currentValue;
+    }
+    if (changes['content']) {
+      this.onContentSet();
     }
   }
 

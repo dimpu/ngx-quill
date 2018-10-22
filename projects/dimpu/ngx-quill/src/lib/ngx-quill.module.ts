@@ -1,9 +1,9 @@
+import 'katex';
 import { NgModule } from '@angular/core';
 import { NgxQuillComponent } from './ngx-quill.component';
 
 @NgModule({
-  imports: [
-  ],
+  imports: [],
   declarations: [ NgxQuillComponent ],
   exports: [ NgxQuillComponent ]
 })

@@ -1,5 +1,11 @@
 
 <!-- <router-outlet></router-outlet> -->
 
-
+<h2>Default</h2>
 <ngx-quill></ngx-quill>
+
+<h2> Cutom toolbar </h2>
+<ngx-quill [modules]="modules"
+[content]="content"
+(contentChanged)="onContentChanged($event)"></ngx-quill>
+
