@@ -1,187 +1,78 @@
-import { isPlatformServer, DOCUMENT } from '@angular/common';
-
 import {
   AfterViewInit,
   Component,
   ElementRef,
   EventEmitter,
   forwardRef,
-  Inject,
   Input,
-  NgZone,
   OnChanges,
-  OnDestroy,
   Output,
-  PLATFORM_ID,
-  Renderer2,
   SimpleChanges,
   ViewEncapsulation
 } from '@angular/core';
+import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
-import {
-  NG_VALUE_ACCESSOR,
-  NG_VALIDATORS,
-  ControlValueAccessor,
-  Validator
-} from '@angular/forms';
-import { htmlAstToRender3Ast } from '@angular/compiler/src/render3/r3_template_transform';
-
-
-// import * as QuillNamespace from 'quill';
-// Because quill uses `document` directly, we cannot `import` during SSR
-// instead, we load dynamically via `require('quill')` in `ngAfterViewInit()`
 declare var require: any;
 let Quill: any;
 
-export interface CustomOption {
-  import: string;
-  whitelist: Array<any>;
-}
-
 @Component({
   selector: 'ngx-quill',
-  template: `
-  <ng-content select="[ngx-quill-toolbar]"></ng-content>
-`,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => NgxQuillComponent),
-      multi: true
-    },
-    {
-      provide: NG_VALIDATORS,
-      useExisting: forwardRef(() => NgxQuillComponent),
-      multi: true
-    }
+  template: `<ng-content select="[ngx-quill-toolbar]"></ng-content>`,
+  styleUrls: [
   ],
+  providers: [{
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: forwardRef(() => NgxQuillComponent),
+    multi: true
+  }],
   encapsulation: ViewEncapsulation.None
 })
-export class NgxQuillComponent
-  implements AfterViewInit, ControlValueAccessor, OnChanges, OnDestroy, Validator {
+export class NgxQuillComponent implements AfterViewInit, ControlValueAccessor, OnChanges {
+
   quillEditor: any;
   editorElem: HTMLElement;
-  emptyArray: any[] = [];
-
-  selectionChangeEvent: any;
-  textChangeEvent: any;
+  content: any;
   defaultModules = {
     toolbar: [
-      ['bold', 'italic', 'underline', 'strike'], // toggled buttons
+      ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
       ['blockquote', 'code-block'],
 
-      [{ header: 1 }, { header: 2 }], // custom button values
-      [{ list: 'ordered' }, { list: 'bullet' }],
-      [{ script: 'sub' }, { script: 'super' }], // superscript/subscript
-      [{ indent: '-1' }, { indent: '+1' }], // outdent/indent
-      [{ direction: 'rtl' }], // text direction
+      [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
+      [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+      [{ 'direction': 'rtl' }],                         // text direction
 
-      [{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
-      [{ header: [1, 2, 3, 4, 5, 6, false] }],
+      [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
 
-      [
-        { color: this.emptyArray.slice() },
-        { background: this.emptyArray.slice() }
-      ], // dropdown with defaults from theme
-      [{ font: this.emptyArray.slice() }],
-      [{ align: this.emptyArray.slice() }],
+      [{ 'color': new Array<any>() }, { 'background': new Array<any>() }],          // dropdown with defaults from theme
+      [{ 'font': new Array<any>() }],
+      [{ 'align': new Array<any>() }],
 
-      ['clean'], // remove formatting button
+      ['clean'],                                         // remove formatting button
 
-      ['link', 'image', 'video'] // link and image, video
+      ['link', 'image', 'video']                         // link and image, video
     ]
   };
 
-  @Input() format: 'object' | 'html' | 'text' | 'json' = 'html';
-  @Input() theme: string;
-  @Input() modules: { [index: string]: Object };
-  @Input() readOnly: boolean;
-  @Input() placeholder: string;
-  @Input() maxLength: number;
-  @Input() minLength: number;
-  @Input() required: boolean;
-  @Input() formats: string[];
-  @Input() style: any = {};
-  @Input() strict = true;
-  @Input() scrollingContainer: HTMLElement | string;
-  @Input() bounds: HTMLElement | string;
-  @Input() customOptions: CustomOption[] = [];
-  @Input() content: any;
-  // tslint:disabel:no-on-prefix-output-name
-  @Output() editorCreated: EventEmitter<any> = new EventEmitter();
-  @Output() contentChanged: EventEmitter<any> = new EventEmitter();
-  @Output() selectionChanged: EventEmitter<any> = new EventEmitter();
+  @Input() options: any = {};
 
-  @Input()
-  valueGetter = (quillEditor: any, editorElement: HTMLElement): any => {
-    let html: string | null = editorElement.children[0].innerHTML;
-    if (html === '<p><br></p>' || html === '<div><br><div>') {
-      html = null;
-    }
-    let modelValue = html;
-
-    if (this.format === 'text') {
-      modelValue = quillEditor.getText();
-    } else if (this.format === 'object') {
-      modelValue = quillEditor.getContents();
-    } else if (this.format === 'json') {
-      try {
-        modelValue = JSON.stringify(quillEditor.getContents());
-      } catch (e) {
-        modelValue = quillEditor.getText();
-      }
-    }
-
-    return modelValue;
-  }
-
-  @Input()
-  valueSetter = (quillEditor: any, value: any, format: 'object' | 'html' | 'json'): any => {
-    if (this.format === 'html') {
-      return quillEditor.clipboard.convert(value);
-    } else if (this.format === 'json') {
-      try {
-        return JSON.parse(value);
-      } catch (e) {
-        return value;
-      }
-    }
-
-    return value;
-  }
+  @Output() blur: EventEmitter<any> = new EventEmitter();
+  @Output() focus: EventEmitter<any> = new EventEmitter();
+  @Output() ready: EventEmitter<any> = new EventEmitter();
+  @Output() change: EventEmitter<any> = new EventEmitter();
 
   onModelChange: Function = () => {};
   onModelTouched: Function = () => {};
 
-  constructor(
-    private elementRef: ElementRef,
-    @Inject(DOCUMENT) private doc: any,
-    @Inject(PLATFORM_ID) private platformId: Object,
-    private renderer: Renderer2,
-    private zone: NgZone
-  ) {}
+  constructor(private elementRef: ElementRef) { }
 
   ngAfterViewInit() {
-    if (isPlatformServer(this.platformId)) {
-      return;
-    }
-    if (!Quill) {
-      Quill = require('quill');
-    }
-
     const toolbarElem = this.elementRef.nativeElement.querySelector(
       '[ngx-quill-toolbar]'
     );
-    const modules: any = this.modules || this.defaultModules;
-    let placeholder = 'Insert text here ...';
 
-    if (this.placeholder !== null && this.placeholder !== undefined) {
-      placeholder = this.placeholder.trim();
-    }
-
-    if (toolbarElem) {
-      modules['toolbar'] = toolbarElem;
-    }
     this.elementRef.nativeElement.insertAdjacentHTML(
       'beforeend',
       '<div ngx-quill-element></div>'
@@ -190,126 +81,61 @@ export class NgxQuillComponent
       '[ngx-quill-element]'
     );
 
-    if (this.style) {
-      Object.keys(this.style).forEach((key: string) => {
-        this.renderer.setStyle(this.editorElem, key, this.style[key]);
-      });
+
+    if (!Quill) {
+      Quill = require('quill');
     }
 
-    this.customOptions.forEach(customOption => {
-      const newCustomOption = Quill.import(customOption.import);
-      newCustomOption.whitelist = customOption.whitelist;
-      Quill.register(newCustomOption, true);
-    });
+    this.options  =  {...{
+      modules: this.defaultModules,
+      placeholder: 'Insert text here ...',
+      readOnly: false,
+      theme: 'snow',
+      boundary: document.body
+    }, ...this.options};
 
-    this.quillEditor = new Quill(this.editorElem, {
-      modules: modules,
-      placeholder: placeholder,
-      readOnly: this.readOnly || false,
-      theme: this.theme || 'snow',
-      formats: this.formats,
-      bounds: this.bounds ? (this.bounds === 'self' ? this.editorElem : this.bounds) : this.doc.body,
-      strict: this.strict,
-      scrollingContainer: this.scrollingContainer
-    });
-
-    this.onContentSet();
-
-    this.editorCreated.emit(this.quillEditor);
-
-    // mark model as touched if editor lost focus
-    this.selectionChangeEvent = this.quillEditor.on(
-      'selection-change',
-      (range: any, oldRange: any, source: string) => {
-        this.zone.run(() => {
-          this.selectionChanged.emit({
-            editor: this.quillEditor,
-            range: range,
-            oldRange: oldRange,
-            source: source
-          });
-
-          if (!range) {
-            this.onModelTouched();
-          }
-        });
-      }
-    );
-
-    // update model if text changes
-    this.textChangeEvent = this.quillEditor.on(
-      'text-change',
-      (delta: any, oldDelta: any, source: string) => {
-
-        const text = this.quillEditor.getText();
-        const content = this.quillEditor.getContents();
-        let html: string | null = this.editorElem.children[0].innerHTML;
-        if (html === '<p><br></p>' || html === '<div><br><div>') {
-          html = null;
-        }
-
-        this.zone.run(() => {
-          this.onModelChange(
-            this.valueGetter(this.quillEditor, this.editorElem)
-          );
-
-          this.contentChanged.emit({
-            editor: this.quillEditor,
-            html: html,
-            text: text,
-            content: content,
-            delta: delta,
-            oldDelta: oldDelta,
-            source: source
-          });
-        });
-      }
-    );
-  }
-
-  ngOnDestroy() {
-    if (this.selectionChangeEvent) {
-      this.selectionChangeEvent.removeListener('selection-change');
+    if (toolbarElem) {
+      this.options.modules['toolbar'] = toolbarElem;
     }
-    if (this.textChangeEvent) {
-      this.textChangeEvent.removeListener('text-change');
-    }
-  }
 
-  onContentSet() {
+    this.quillEditor = new Quill(this.editorElem, this.options);
+
     if (this.content) {
-      if (this.format === 'object') {
-        this.quillEditor.setContents(this.content, 'silent');
-      } else if (this.format === 'text') {
-        this.quillEditor.setText(this.content, 'silent');
-      } else if (this.format === 'json') {
-        try {
-          this.quillEditor.setContents(JSON.parse(this.content), 'silent');
-        } catch (e) {
-          this.quillEditor.setText(this.content, 'silent');
-        }
+      this.quillEditor.pasteHTML(this.content);
+    }
+
+    this.ready.emit(this.quillEditor);
+
+    this.quillEditor.on('selection-change', (range: any) => {
+      if (!range) {
+        this.onModelTouched();
+        this.blur.emit(this.quillEditor);
       } else {
-        const contents = this.quillEditor.clipboard.convert(this.content);
-        this.quillEditor.setContents(contents, 'silent');
+        this.focus.emit(this.quillEditor);
+      }
+    });
+
+    this.quillEditor.on('text-change', (delta: any, oldDelta: any, source: any) => {
+      let html = this.editorElem.children[0].innerHTML;
+      const text = this.quillEditor.getText();
+
+      if (html === '<p><br></p>') {
+        html = null;
       }
 
-      this.quillEditor.history.clear();
-    }
+      this.onModelChange(html);
+
+      this.change.emit({
+        editor: this.quillEditor,
+        html: html,
+        text: text
+      });
+    });
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (!this.quillEditor) {
-      return;
-    }
-    if (changes['readOnly']) {
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['readOnly'] && this.quillEditor) {
       this.quillEditor.enable(!changes['readOnly'].currentValue);
-    }
-    if (changes['placeholder']) {
-      this.quillEditor.root.dataset.placeholder =
-        changes['placeholder'].currentValue;
-    }
-    if (changes['content']) {
-      this.onContentSet();
     }
   }
 
@@ -318,13 +144,7 @@ export class NgxQuillComponent
 
     if (this.quillEditor) {
       if (currentValue) {
-        if (this.format === 'text') {
-          this.quillEditor.setText(currentValue);
-        } else {
-          this.quillEditor.setContents(
-            this.valueSetter(this.quillEditor, this.content, this.format)
-          );
-        }
+        this.quillEditor.pasteHTML(currentValue);
         return;
       }
       this.quillEditor.setText('');
@@ -338,48 +158,4 @@ export class NgxQuillComponent
   registerOnTouched(fn: Function): void {
     this.onModelTouched = fn;
   }
-
-  validate() {
-    if (!this.quillEditor) {
-      return null;
-    }
-
-    const err: {
-        minLengthError?: { given: number; minLength: number };
-        maxLengthError?: { given: number; maxLength: number };
-        requiredError?: { empty: boolean };
-      } = {};
-    let valid = true;
-
-    const textLength = this.quillEditor.getText().trim().length;
-
-    if (this.minLength && textLength && textLength < this.minLength) {
-      err.minLengthError = {
-        given: textLength,
-        minLength: this.minLength
-      };
-
-      valid = false;
-    }
-
-    if (this.maxLength && textLength > this.maxLength) {
-      err.maxLengthError = {
-        given: textLength,
-        maxLength: this.maxLength
-      };
-
-      valid = false;
-    }
-
-    if (this.required && !textLength) {
-      err.requiredError = {
-        empty: true
-      };
-
-      valid = false;
-    }
-
-    return valid ? null : err;
-  }
 }
-

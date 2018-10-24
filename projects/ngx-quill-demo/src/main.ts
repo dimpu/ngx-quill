@@ -1,3 +1,4 @@
+import 'hammerjs';
 import 'katex';
 
 import { enableProdMode } from '@angular/core';

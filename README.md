@@ -1,158 +1,111 @@
 # ngx-quill [![Build Status](https://travis-ci.org/dimpu/ngx-quill.svg?branch=develop)](https://travis-ci.org/dimpu/ngx-quill)
-
 Angular (>=2) component for rich text editor Quill
-- angular v7 - ngx-quill >= 7.0.0
 
-<img src="https://cloud.githubusercontent.com/assets/2264672/20601381/a51753d4-b258-11e6-92c2-1d79efa5bede.png" width="200px">
-
-ngx-quill is the new angular (>=2) implementation of ngQuill.
-
-## Examples
-- [demo-page](https://dimpu.github.io/ngx-quill-example)
-- [example-repo](https://github.com/dimpu/ngx-quill-example)
+# Example
+[Demo Page](https://dimpu.github.io/ngx-quill/)
 
 
-## Installation
-- `npm install ngx-quill`
-- for projects using Angular < v5.0.0 install `npm install ngx-quill@1.6.0`
-- install `@angular/core`, `@angular/forms`, `quill` and `rxjs` - peer dependencies of ngx-quill
-- include theme stylings: bubble.css, snow.css of quilljs in your index.html, or add them in your css/scss files with `@import` statements, or add them external stylings in your build process.
+### Installation
 
-### For standard webpack and tsc builds
-- import `QuillModule` from `ngx-quill`:
+``` bash
+npm install @dimpu/ngx-quill --save
 ```
-import { QuillModule } from 'ngx-quill'
-```
-- add `QuillModule` to the imports of your NgModule:
-```
+
+### Sample
+
+Include NgxQuillModule in your main module:
+``` typescript
+import { NgxQuillModule } from '@dimpu/ngx-quill';
+
 @NgModule({
+  // ...
   imports: [
-    ...,
-
-    QuillModule
+    NgxQuillModule
   ],
-  ...
+  // ...
 })
-class YourModule { ... }
+export class AppModule {}
 ```
-- use `<ngx-quill></ngx-quill>` in your templates to add a default quill editor
-- do not forget to include quill + theme css in your buildprocess, module or index.html!
 
-### For SystemJS builds (Config)
-- add quill and ngx-quill to your `paths`:
+Then use it in your component:
+
+``` html
+<!-- use with ngModel -->
+<ngx-quill [(ngModel)]="editorContent"
+              [options]="editorOptions"
+              (blur)="onEditorBlured($event)"
+              (focus)="onEditorFocused($event)"
+              (ready)="onEditorCreated($event)"
+              (change)="onContentChanged($event)"></ngx-quill>
+
+
+<!-- or use with formControl -->
+<ngx-quill [formControl]="editorContent"
+            [options]="editorOptions"
+            (blur)="onEditorBlured($event)"
+            (focus)="onEditorFocused($event)"
+            (ready)="onEditorCreated($event)"
+            (change)="onContentChanged($event)"></ngx-quill>
 ```
-paths: {
-  ...
-  'ngx-quill': 'node_modules/ngx-quill/bundles/ngx-quill.umd.js',
-  'quill': 'node_modules/quill/dist/quill.js'
-}
-```
-- set format and dependencies in `packages`:
-```
-packages: {
-  'ngx-quill': {
-    format: 'cjs',
-    meta: {
-      deps: ['quill']
-    }
-  },
-  'quill': {
-    format: 'cjs'
+
+``` javascript
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'sample',
+  template: require('./sample.html')
+})
+export class Sample {
+
+  public editor;
+  public editorContent = `<h3>I am Example content</h3>`;
+  public editorOptions = {
+    placeholder: "insert content..."
+  };
+
+  constructor() {}
+
+  onEditorBlured(quill) {
+    console.log('editor blur!', quill);
   }
+
+  onEditorFocused(quill) {
+    console.log('editor focus!', quill);
+  }
+
+  onEditorCreated(quill) {
+    this.editor = quill;
+    console.log('quill is ready! this is current quill instance object', quill);
+  }
+
+  onContentChanged({ quill, html, text }) {
+    console.log('quill content is changed!', quill, html, text);
+  }
+
+  ngOnInit() {
+    setTimeout(() => {
+      this.editorContent = '<h1>content changed!</h1>';
+      console.log('you can use the quill instance object to do something', this.editor);
+      // this.editor.disable();
+    }, 2800)
+  }
+
+  onReady(quill) {
+    const customButton = document.querySelector('#custom-button');
+    customButton.addEventListener('click', function() {
+      const range = quill.getSelection();
+      if (range) {
+        quill.insertText(range.index, 'Ω');
+      }
+    });
+  }
+
+  
+
 }
 ```
-- follow the steps of **For standard webpack and tsc builds**
-- for builds with angular-cli >=6 only add quilljs to your scripts!
 
-## Config
-- ngModel - set initial value or allow two-way databinding
-- readOnly (true | false) if user can edit content
-- formats - array of allowed formats/groupings
-- format - model format - default: `html`, values: `html | object | text | json`, sets the model value type - html = html string, object = quill operation object, json = quill operation json, text = plain text
-- modules - configure/disable quill modules, e.g toolbar or add custom toolbar via html element default is
-```
-{
-  toolbar: [
-    ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
-    ['blockquote', 'code-block'],
 
-    [{ 'header': 1 }, { 'header': 2 }],               // custom button values
-    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-    [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
-    [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
-    [{ 'direction': 'rtl' }],                         // text direction
+### Configuration
+- options : The configuration object for quill see https://quilljs.com/docs/quickstart/
 
-    [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
-    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-
-    [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-    [{ 'font': [] }],
-    [{ 'align': [] }],
-
-    ['clean'],                                         // remove formatting button
-
-    ['link', 'image', 'video']                         // link and image, video
-  ]
-};
-```
-- theme - bubble/snow, default is `snow`
-- style - set a style object, e.g. `[style]="{height: '250px'}"`
-- placeholder - placeholder text, default is `Insert text here ...`
-- bounds - boundary of the editor, default `document.body`, pass 'self' to attach the editor element
-- maxLength - add validation for maxlength - set model state to `invalid` and add `ng-invalid` class
-- minLength - add validation for minlength - set model state to `invalid` and add `ng-invalid` class, only set invalid if editor text not empty --> if you want to check if text is required --> use the required attribute
-- required - add validation as a required field - `[required]="true"` - default: false, boolean expected (no strings!)
-- strict - default: true, sets editor in strict mode
-- scrollingContainer - default '.ql-editor', allows to set scrolling container
-- use custom-options for adding for example custom font sizes --> this overwrites this options **globally** !!!
-- possbility to create a custom toolbar via projection slot `[ngx-quill-toolbar]`:
-```
-<ngx-quill>
-  <div ngx-quill-toolbar>
-    <span class="ql-formats">
-      <button class="ql-bold" [title]="'Bold'"></button>
-    </span>
-    <span class="ql-formats">
-      <select class="ql-align" [title]="'Aligment'">
-        <option selected></option>
-        <option value="center"></option>
-        <option value="right"></option>
-        <option value="justify"></option>
-      </select>
-      <select class="ql-align" [title]="'Aligment2'">
-        <option selected></option>
-        <option value="center"></option>
-        <option value="right"></option>
-        <option value="justify"></option>
-      </select>
-    </span>
-  </div>
-</ngx-quill>
-```
-
-## Outputs
-- onEditorCreated - editor instance
-```
-editor
-```
-- onContentChanged - text is updated
-```
-{
-  editor: editorInstance,
-  html: html,
-  text: text,
-  content: content,
-  delta: delta,
-  oldDelta: oldDelta,
-  source: source
-}
-```
-- onSelectionChanged - selection is updated
-```
-{
-  editor: editorInstance,
-  range: range,
-  oldRange: oldRange,
-  source: source
-}
-```
