@@ -1,2 +1,4 @@
 <h2>Custom Image Handlers</h2>
-<ngx-quill [options]="editorOptionsImageOnly"></ngx-quill>
+<ngx-quill [options]="editorOptionsImageOnly"
+(ready)="onReady($event)"
+></ngx-quill>

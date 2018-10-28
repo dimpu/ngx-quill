@@ -9,6 +9,7 @@ import { ImageUploaderComponent } from '../modals/image-uploader/image-uploader.
   styleUrls: ['./image-handler.component.css']
 })
 export class ImageHandlerComponent implements OnInit {
+  editor: any;
   editorOptionsImageOnly = {
     modules: {
       formula: true,
@@ -19,7 +20,8 @@ export class ImageHandlerComponent implements OnInit {
             const dialogRef = this.dialog.open(ImageUploaderComponent);
             dialogRef.afterClosed().subscribe(res => {
               if (res) {
-                // this.folderAdded.emit({ name: res });
+                const range = this.editor.getSelection();
+                this.editor.insertEmbed(range.index, 'image', res.thumb);
               }
             });
           }
@@ -31,6 +33,11 @@ export class ImageHandlerComponent implements OnInit {
   constructor(public dialog: MatDialog) { }
 
   ngOnInit() {
+  }
+
+  onReady(quill) {
+    this.editor = quill;
+    console.log(quill);
   }
 
 }
