@@ -20,6 +20,7 @@ import { CustomToolbarComponent } from './custom-toolbar/custom-toolbar.componen
 import { ThemesComponent } from './themes/themes.component';
 import { ImageHandlerComponent } from './image-handler/image-handler.component';
 import { ImageUploaderComponent } from './modals/image-uploader/image-uploader.component';
+import { NgxFileManagerModule } from '@dimpu/ngx-file-manager';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,7 @@ import { ImageUploaderComponent } from './modals/image-uploader/image-uploader.c
     MatListModule,
     MatIconModule,
     LayoutModule,
-
+    NgxFileManagerModule,
     NgxQuillModule,
     BrowserAnimationsModule,
     AppRoutingModule,

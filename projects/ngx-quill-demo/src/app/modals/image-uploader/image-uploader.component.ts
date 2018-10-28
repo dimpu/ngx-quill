@@ -1,4 +1,5 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material';
 declare var MM: any;
 
 @Component({
@@ -6,23 +7,26 @@ declare var MM: any;
   templateUrl: './image-uploader.component.html',
   styleUrls: ['./image-uploader.component.css']
 })
-export class ImageUploaderComponent implements AfterViewInit {
+export class ImageUploaderComponent  {
 
-  constructor() { }
+  apiConfig: any = {
+    baseUrl: 'http://localhost:3100/api/',
+    listUrl: 'list',
+    uploadUrl: 'upload'
+  };
 
-  ngAfterViewInit(): void {
-    // tslint:disable-next-line:no-unused-expression
-    new MM({
-      el: '#media-manager',
-      api: {
-          baseUrl: 'https://www.iutbayonne.univ-pau.fr/~klevron/mm/api/',
-          listUrl: 'list?path=images',
-          downloadUrl: 'download',  // optional
-          uploadUrl: 'upload',      // optional
-          deleteUrl: 'delete'       // optional
-      }
-    });
+  constructor(
+    private dialogRef: MatDialogRef<ImageUploaderComponent>
+  ) {}
 
+  onFileUploaded($event) {
+    this.dialogRef.close($event);
+    console.log($event);
+  }
+
+  onFileSelected($event) {
+    this.dialogRef.close($event);
+    console.log($event);
   }
 
 }
