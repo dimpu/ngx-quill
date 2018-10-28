@@ -1,0 +1,4 @@
+<h2>Bubble theme</h2>
+<form [formGroup]="form" (ngSubmit)="onSubmit(form.value)" class="form" class="board-form">
+  <ngx-quill [formControl]="content" [options]="editorOptions"></ngx-quill>
+</form>
