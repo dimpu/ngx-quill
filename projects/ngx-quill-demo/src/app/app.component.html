@@ -1,40 +1,5 @@
-<div class="mat-elevation-z6">
-  <mat-toolbar color="primary">
-    <span>NgxQuill</span>
-  </mat-toolbar>
-</div>
-
-<header class="header-background">
-  <div class="header-section">
-    <div class="header-headline">
-      <h1 class="mat-h1">Angular Quill Editor</h1>
-    </div>
+<app-layout>
+  <div class="container">
+    <router-outlet></router-outlet>
   </div>
-</header>
-
-<div class="container">
-  <h2>Default</h2>
-  <ngx-quill></ngx-quill>
-
-  <h2> Cutom toolbar </h2>
-
-  <ngx-quill [options]="editorOptions" (change)="onContentChanged($event)" (ready)="onReady($event)">
-    <div ngx-quill-toolbar>
-      <div id="toolbar">
-        <button class="ql-bold"></button>
-        <button class="ql-italic"></button>
-        <button id="custom-button">&#8486;</button>
-      </div>
-    </div>
-  </ngx-quill>
-
-
-
-  <h2>Inline (Bubble theme)</h2>
-  <form [formGroup]="form" (ngSubmit)="onSubmit(form.value)" class="form" class="board-form">
-    <ngx-quill [formControl]="content" [options]="editorOptions2" (change)="onContentChanged($event)" (ready)="onReady($event)"></ngx-quill>
-  </form>
-
-
-
-</div>
+</app-layout>

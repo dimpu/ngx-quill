@@ -1,0 +1,12 @@
+<h2> Cutom toolbar </h2>
+
+<ngx-quill [options]="editorOptions" (ready)="onReady($event)">
+  <div ngx-quill-toolbar>
+    <div id="toolbar">
+      <button class="ql-bold"></button>
+      <button class="ql-italic"></button>
+      <button id="custom-button">&#8486;</button>
+      <button id="custom-button2">OI</button>
+    </div>
+  </div>
+</ngx-quill>

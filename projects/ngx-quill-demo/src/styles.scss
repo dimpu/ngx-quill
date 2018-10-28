@@ -30,3 +30,8 @@ $ngx-quill-demo-theme: mat-light-theme($ngx-quill-demo-primary, $ngx-quill-demo-
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+.container {
+  padding: 20px;
+}
