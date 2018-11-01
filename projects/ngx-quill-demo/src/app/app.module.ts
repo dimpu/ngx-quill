@@ -11,7 +11,7 @@ import {
   MatIconModule,
   MatListModule,
   MatDialogModule } from '@angular/material';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { LayoutComponent } from './shared/layout/layout.component';
 import { LayoutModule } from '@angular/cdk/layout';
 import { AppRoutingModule } from './app-routing.module';
@@ -34,6 +34,7 @@ import { NgxFileManagerModule } from '@dimpu/ngx-file-manager';
   ],
   imports: [
     BrowserModule,
+    FormsModule,
     ReactiveFormsModule,
     MatToolbarModule,
     MatButtonModule,
