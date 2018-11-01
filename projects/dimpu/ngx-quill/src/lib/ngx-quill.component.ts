@@ -132,6 +132,10 @@ export class NgxQuillComponent implements AfterViewInit, ControlValueAccessor, O
         text: text
       });
     });
+    this.quillEditor.enable(false);
+    setTimeout(() => {
+      this.quillEditor.enable(true);
+    }, 0);
   }
 
   ngOnChanges(changes: SimpleChanges) {
