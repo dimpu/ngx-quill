@@ -1,6 +1,6 @@
 {
   "name": "ngx-quill",
-  "version": "7.0.0",
+  "version": "7.0.6",
   "author": {
     "name": "Dimpu Aravind Budddha"
   },
@@ -39,7 +39,7 @@
     "demo.test": "ng test ngx-quill-demo",
     "demo.lint": "ng lint ngx-quill-demo",
     "demo.deploy": "npm run demo.build -- --base-href='/ngx-quill/' && gh-pages -d dist/ngx-quill-demo/",
-    "npm.publish": "cd projects/dimpu/ngx-quill && npm version patch && cd ../../../ && npm run lib.build && cp ./README.md dist/dimpu/ngx-quill && cd dist/dimpu/ngx-quill  && npm config set scope dimpu && npm publish --access=public"
+    "npm.publish": "npm version patch && cd projects/dimpu/ngx-quill && npm version patch && cd ../../../ && npm run lib.build && cp ./README.md dist/dimpu/ngx-quill && cd dist/dimpu/ngx-quill  && npm config set scope dimpu && npm publish --access=public"
   },
   "private": true,
   "dependencies": {
@@ -73,7 +73,7 @@
     "@angular/language-service": "~7.0.0",
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",
-    "@types/node": "~8.9.4",
+    "@types/node": "^8.10.36",
     "@types/quill": "^2.0.1",
     "codelyzer": "~4.5.0",
     "gh-pages": "^2.0.1",
