@@ -99,7 +99,6 @@ export class NgxQuillComponent implements AfterViewInit, ControlValueAccessor, O
     }
 
     this.quillEditor = new Quill(this.editorElem, this.options);
-    this.quillEditor.blur();
 
     if (this.content) {
       this.quillEditor.pasteHTML(this.content);
