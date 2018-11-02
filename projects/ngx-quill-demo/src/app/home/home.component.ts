@@ -6,11 +6,14 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-  val =  '<p>some content</p>';
-
+  content = '<p>some content</p>';
   constructor() { }
 
   ngOnInit() {
+  }
+
+  onContentChange(e) {
+    console.log(e);
   }
 
 }
