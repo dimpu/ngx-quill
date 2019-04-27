@@ -1,6 +1,6 @@
 {
   "name": "ngx-quill",
-  "version": "7.0.0",
+  "version": "7.0.10",
   "author": {
     "name": "Dimpu Aravind Budddha"
   },
@@ -38,8 +38,8 @@
     "demo.build": "ng build ngx-quill-demo",
     "demo.test": "ng test ngx-quill-demo",
     "demo.lint": "ng lint ngx-quill-demo",
-    "demo.deploy":"npm run demo.build -- --base-href='/ngx-quill/' && gh-pages -d dist/ngx-quill-demo/",
-    "npm.publish": "cd projects/dimpu/ngx-quill && npm version patch && cd ../../../ && npm run lib.build && cp ./README.md dist/dimpu/ngx-quill && cd dist/dimpu/ngx-quill  && npm config set scope dimpu && npm publish --access=public"
+    "demo.deploy": "npm run demo.build -- --base-href='/ngx-quill/' && gh-pages -d dist/ngx-quill-demo/",
+    "npm.publish": "npm version patch && cd projects/dimpu/ngx-quill && npm version patch && cd ../../../ && npm run lib.build && cp ./README.md dist/dimpu/ngx-quill && cd dist/dimpu/ngx-quill  && npm config set scope dimpu && npm publish --access=public"
   },
   "private": true,
   "dependencies": {
@@ -48,12 +48,14 @@
     "@angular/common": "~7.0.0",
     "@angular/compiler": "~7.0.0",
     "@angular/core": "~7.0.0",
+    "@angular/flex-layout": "^7.0.0-beta.19",
     "@angular/forms": "~7.0.0",
     "@angular/http": "~7.0.0",
     "@angular/material": "^7.0.1",
     "@angular/platform-browser": "~7.0.0",
     "@angular/platform-browser-dynamic": "~7.0.0",
     "@angular/router": "~7.0.0",
+    "@dimpu/ngx-file-manager": "^7.0.4",
     "core-js": "^2.5.4",
     "hammerjs": "^2.0.8",
     "katex": "^0.10.0-rc.1",
@@ -71,7 +73,7 @@
     "@angular/language-service": "~7.0.0",
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",
-    "@types/node": "~8.9.4",
+    "@types/node": "^8.10.36",
     "@types/quill": "^2.0.1",
     "codelyzer": "~4.5.0",
     "gh-pages": "^2.0.1",

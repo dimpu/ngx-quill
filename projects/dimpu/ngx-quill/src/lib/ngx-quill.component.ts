@@ -31,7 +31,6 @@ export class NgxQuillComponent implements AfterViewInit, ControlValueAccessor, O
 
   quillEditor: any;
   editorElem: HTMLElement;
-  content: any;
   defaultModules = {
     toolbar: [
       ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
@@ -57,6 +56,7 @@ export class NgxQuillComponent implements AfterViewInit, ControlValueAccessor, O
   };
 
   @Input() options: any = {};
+  @Input() content: any;
 
   @Output() blur: EventEmitter<any> = new EventEmitter();
   @Output() focus: EventEmitter<any> = new EventEmitter();
@@ -131,11 +131,19 @@ export class NgxQuillComponent implements AfterViewInit, ControlValueAccessor, O
         text: text
       });
     });
+    this.quillEditor.enable(false);
+    setTimeout(() => {
+      this.quillEditor.enable(true);
+    }, 0);
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['readOnly'] && this.quillEditor) {
       this.quillEditor.enable(!changes['readOnly'].currentValue);
+    }
+
+    if (changes['content'] && this.quillEditor) {
+      this.quillEditor.pasteHTML(this.content);
     }
   }
 

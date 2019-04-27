@@ -1,4 +1,6 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material';
+declare var MM: any;
 
 @Component({
   selector: 'app-image-uploader',
