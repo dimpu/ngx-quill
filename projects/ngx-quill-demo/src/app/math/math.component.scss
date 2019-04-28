@@ -1,0 +1,7 @@
+button.ql-math {
+  border: 1px dashed #333 !important;
+
+  &:after {
+    content: 'M',
+  }
+}

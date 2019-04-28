@@ -10,7 +10,8 @@ import {
   MatSidenavModule,
   MatIconModule,
   MatListModule,
-  MatDialogModule } from '@angular/material';
+  MatDialogModule
+} from '@angular/material';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { LayoutComponent } from './shared/layout/layout.component';
 import { LayoutModule } from '@angular/cdk/layout';
@@ -21,6 +22,7 @@ import { ThemesComponent } from './themes/themes.component';
 import { ImageHandlerComponent } from './image-handler/image-handler.component';
 import { ImageUploaderComponent } from './modals/image-uploader/image-uploader.component';
 import { NgxFileManagerModule } from '@dimpu/ngx-file-manager';
+import { MathComponent } from './math/math.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +33,7 @@ import { NgxFileManagerModule } from '@dimpu/ngx-file-manager';
     ThemesComponent,
     ImageHandlerComponent,
     ImageUploaderComponent,
+    MathComponent
   ],
   imports: [
     BrowserModule,
@@ -46,11 +49,11 @@ import { NgxFileManagerModule } from '@dimpu/ngx-file-manager';
     NgxFileManagerModule,
     NgxQuillModule,
     BrowserAnimationsModule,
-    AppRoutingModule,
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent],
   exports: [],
   entryComponents: [ImageUploaderComponent]
 })
-export class AppModule { }
+export class AppModule {}
